@@ -3,8 +3,8 @@
   hosts: test
   become: yes
   vars:
-    user_password: user_password
-    user_name: ftpuser
+    user_password: "user_password"
+    user_name: "ftpuser"
   tasks: 
     - name: Install aptitude
       ansible.builtin.apt:
@@ -21,7 +21,7 @@
     - name: Install configuration file
       ansible.builtin.template:
         src: vsftpd.conf.j2
-        dest: /etc/vsftpd.conf
+        dest: "/etc/vsftpd.conf"
         mode: '0600'
 
     - name: Start vsftpd
@@ -68,7 +68,7 @@
 
     - name: Create user
         ansible.builtin.user:
-          name: user
+          name: {{ user_name }}
           password:  "{{ user_password | password_hash('sha512') }}"
           shell: /bin/false
 
