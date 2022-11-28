@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/56350113/ansible-create-a-self-signed-ssl-certificate-and-key
+https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html

@@ -1,0 +1,5 @@
+[test]
+admin@158.160.47.94
+
+[local]
+localhost
