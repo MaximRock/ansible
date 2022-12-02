@@ -1,0 +1,39 @@
+---
+- name: Installation and configuration php-fpm 8.1
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install aptitude
+      ansible.builtin.apt:
+        name: aptitude
+        state: latest
+        update_cache: yes
+    
+    - name: Install php-fpm 8.1
+      ansible.builtin.apt:
+        name: php8.1-fpm
+        state: present
+        update_cache: yes
+
+    - name: Create nginx.conf
+      ansible.builtin.template:
+        src: default.nginx.j2
+        dest: /etc/nginx/sites-available/default
+
+    - name: Set permissions for a directory
+      ansible.builtin.file:
+        path: /var/www/html/ 
+        mode: '777'
+
+    - name: Create file info.php
+      ansible.builtin.copy:
+        dest: /var/www/html/info.php
+        content: "<?php phpinfo();?>"
+
+  handlers:
+  - name: Restart nginx
+    ansible.builtin.service:
+      name: nginx
+      state: restarted  
+         
+      

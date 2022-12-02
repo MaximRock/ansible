@@ -1,5 +1,5 @@
 [test]
-admin@158.160.47.94
+admin@158.160.48.10
 
 [local]
 localhost

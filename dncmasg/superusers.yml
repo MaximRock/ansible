@@ -1,0 +1,35 @@
+---
+- name: Create group and users
+  hosts: ubuntu
+  become: yes
+  vars:
+    password: qwerty
+  tasks:
+    - name: Create groups superusers
+      ansible.builtin.group:
+        name: superusers
+        state: present
+
+    - name: Validate the sudoers file before saving
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^admin'
+        insertafter: '^%admin'
+        line: '%superusers ALL=(ALL) ALL'
+        validate: visudo -cf %s
+
+    - name: Create user1
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password: "{{ password | password_hash('sha512')}}"
+        create_home: true
+        shell: /bin/bash
+        groups: "superusers"
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+        append: true
+      loop:
+       - user1
+       - user2
