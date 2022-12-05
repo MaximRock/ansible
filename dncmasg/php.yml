@@ -8,32 +8,34 @@
         name: aptitude
         state: latest
         update_cache: yes
-    
+
     - name: Install php-fpm 8.1
       ansible.builtin.apt:
         name: php8.1-fpm
         state: present
         update_cache: yes
 
+    - name: Create directory
+      ansible.builtin.file:
+        path: /opt/nginx/ansible
+        state: directory
+        mode: 0777
+
     - name: Create nginx.conf
       ansible.builtin.template:
         src: default.nginx.j2
         dest: /etc/nginx/sites-available/default
-
-    - name: Set permissions for a directory
-      ansible.builtin.file:
-        path: /var/www/html/ 
-        mode: '777'
+      notify:
+        - Restart nginx
 
     - name: Create file info.php
       ansible.builtin.copy:
-        dest: /var/www/html/info.php
-        content: "<?php phpinfo();?>"
+        dest: /opt/nginx/ansible/index.php
+        content: "<?php phpinfo();?>"        
 
   handlers:
   - name: Restart nginx
     ansible.builtin.service:
       name: nginx
-      state: restarted  
-         
-      
+      state: restarted
+      enable: yes

@@ -14,21 +14,27 @@
         name: nginx
         state: present
         update_cache: true
+      notify:
+        - Restart nginx   
 
     - name: Enable port 80        
       community.general.ufw:
         rule: allow
         name: 'Nginx HTTP'
+      notify:
+        - Restart ufw  
 
   handlers:
   - name: Restart nginx
     ansible.builtin.service:
       name: nginx
       state: restarted
+      enable: yes
   - name: Restart ufw 
     ansible.builtin.service:
       name: ufw
-      state: reload
+      state: reloaded
+      enable: yes
        
            
 
