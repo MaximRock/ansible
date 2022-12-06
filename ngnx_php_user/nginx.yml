@@ -1,0 +1,43 @@
+---
+- name: Install nginx
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install aptitude
+      ansible.builtin.apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+      notify: Restart nginx  
+
+    - name: Enable port 80        
+      community.general.ufw:
+        rule: allow
+        name: 'Nginx HTTP'
+      notify: Restart ufw
+
+    - name: Create nginx.conf
+      ansible.builtin.template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify:
+        - Restart nginx
+
+
+    handlers: 
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+        enabled: yes
+    - name: Restart ufw 
+      ansible.builtin.service:
+        name: ufw
+        state: reload
+        enabled: yes    
